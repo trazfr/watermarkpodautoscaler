@@ -1,52 +1,56 @@
 module github.com/DataDog/watermarkpodautoscaler
 
+go 1.13
+
 require (
 	github.com/Azure/go-autorest/autorest v0.9.1 // indirect
 	github.com/Azure/go-autorest/autorest/adal v0.6.0 // indirect
-	github.com/NYTimes/gziphandler v1.0.1 // indirect
-	github.com/coreos/pkg v0.0.0-20180928190104-399ea9e2e55f // indirect
 	github.com/go-logr/logr v0.1.0
-	github.com/gorilla/websocket v1.4.0 // indirect
-	github.com/grpc-ecosystem/go-grpc-prometheus v1.2.0 // indirect
-	github.com/jonboulle/clockwork v0.1.0 // indirect
+	github.com/gophercloud/gophercloud v0.1.0 // indirect
 	github.com/magiconair/properties v1.8.0
-
-	github.com/operator-framework/operator-sdk v0.8.2-0.20190522220659-031d71ef8154
-	github.com/prometheus/client_golang v0.9.3
-	github.com/prometheus/common v0.4.0
-	github.com/soheilhy/cmux v0.1.4 // indirect
+	github.com/operator-framework/operator-sdk v0.0.0-00010101000000-000000000000
+	github.com/prometheus/client_golang v1.1.0
+	github.com/prometheus/common v0.6.0
 	github.com/spf13/pflag v1.0.3
 	github.com/stretchr/testify v1.3.0
-	k8s.io/api v0.0.0-20190831074750-7364b6bdad65
-	k8s.io/apimachinery v0.0.0-20190817020851-f2f3a405f61d
+	k8s.io/api v1.15.0
+	k8s.io/apimachinery v1.15.0
 	k8s.io/client-go v11.0.1-0.20190409021438-1a26190bd76a+incompatible
-	k8s.io/code-generator v0.0.0-20190831074504-732c9ca86353
-	k8s.io/gengo v0.0.0-20190822140433-26a664648505
-	k8s.io/heapster v1.5.4 // indirect
-	k8s.io/kube-aggregator v0.0.0-20181213152105-1e8cd453c474
-	k8s.io/kube-openapi v0.0.0-20190816220812-743ec37842bf
-	k8s.io/kubernetes v1.14.2
-	k8s.io/metrics v0.0.0-20181213153603-64084e52e000
-	sigs.k8s.io/controller-runtime v0.2.0
+	k8s.io/code-generator v0.0.0
+	k8s.io/gengo v0.0.0-20190327210449-e17681d19d3a
+	k8s.io/kube-aggregator v1.15.0
+	k8s.io/kube-openapi v0.0.0-20190401085232-94e1e7b7574c
+	k8s.io/kubernetes v1.15.0
+	k8s.io/metrics v1.15.0
+	sigs.k8s.io/controller-runtime v0.2.2
 )
 
-// Pinned to kubernetes-1.13.1
+// All k8s.io deps replace here are due to us depending on non exported apis,
+// and automaticaly replaced (by "go mod") from original stanzas written as:
+// k8s.io/foo => k8s.io/foo kubernetes-1.15.0
+// operator-sdk at current head, to support controller-runtime 0.2.2 (due to logs pkg changes).
 replace (
 	github.com/Azure/go-autorest => github.com/Azure/go-autorest v13.0.0+incompatible
-	github.com/coreos/prometheus-operator => github.com/coreos/prometheus-operator v0.29.0
-	github.com/operator-framework/operator-sdk => github.com/operator-framework/operator-sdk v0.10.1-0.20190910171846-947a464dbe96
-	k8s.io/api => k8s.io/api v0.0.0-20190409021203-6e4e0e4f393b
-	k8s.io/apiextensions-apiserver => k8s.io/apiextensions-apiserver v0.0.0-20190914121727-3652de39ca8c
-	k8s.io/apimachinery => k8s.io/apimachinery v0.0.0-20190817020851-f2f3a405f61d
-	k8s.io/client-go => k8s.io/client-go v0.0.0-20190817021527-637fc595d17a
-	k8s.io/cloud-provider => k8s.io/cloud-provider v0.0.0-20190409023720-1bc0c81fa51d
-	k8s.io/code-generator => k8s.io/code-generator v0.0.0-20190831074504-732c9ca86353
-
-	k8s.io/kube-aggregator => k8s.io/kube-aggregator v0.0.0-20190228175259-3e0149950b0e
-	k8s.io/kube-openapi => k8s.io/kube-openapi v0.0.0-20180711000925-0cf8f7e6ed1d
-	k8s.io/kubernetes => k8s.io/kubernetes v1.14.1
-	sigs.k8s.io/controller-runtime => sigs.k8s.io/controller-runtime v0.2.0
-	sigs.k8s.io/controller-tools => sigs.k8s.io/controller-tools v0.2.1
+	github.com/operator-framework/operator-sdk => github.com/operator-framework/operator-sdk v0.0.0-20190919225052-3a85983ecc72
+	k8s.io/api => k8s.io/api v0.0.0-20190620084959-7cf5895f2711
+	k8s.io/apiextensions-apiserver => k8s.io/apiextensions-apiserver v0.0.0-20190620085554-14e95df34f1f
+	k8s.io/apimachinery => k8s.io/apimachinery v0.0.0-20190612205821-1799e75a0719
+	k8s.io/apiserver => k8s.io/apiserver v0.0.0-20190620085212-47dc9a115b18
+	k8s.io/cli-runtime => k8s.io/cli-runtime v0.0.0-20190620085706-2090e6d8f84c
+	k8s.io/client-go => k8s.io/client-go v0.0.0-20190620085101-78d2af792bab
+	k8s.io/cloud-provider => k8s.io/cloud-provider v0.0.0-20190620090043-8301c0bda1f0
+	k8s.io/cluster-bootstrap => k8s.io/cluster-bootstrap v0.0.0-20190620090013-c9a0fc045dc1
+	k8s.io/code-generator => k8s.io/code-generator v0.0.0-20190612205613-18da4a14b22b
+	k8s.io/component-base => k8s.io/component-base v0.0.0-20190620085130-185d68e6e6ea
+	k8s.io/cri-api => k8s.io/cri-api v0.0.0-20190531030430-6117653b35f1
+	k8s.io/csi-translation-lib => k8s.io/csi-translation-lib v0.0.0-20190620090116-299a7b270edc
+	k8s.io/kube-aggregator => k8s.io/kube-aggregator v0.0.0-20190620085325-f29e2b4a4f84
+	k8s.io/kube-controller-manager => k8s.io/kube-controller-manager v0.0.0-20190620085942-b7f18460b210
+	k8s.io/kube-proxy => k8s.io/kube-proxy v0.0.0-20190620085809-589f994ddf7f
+	k8s.io/kube-scheduler => k8s.io/kube-scheduler v0.0.0-20190620085912-4acac5405ec6
+	k8s.io/kubectl => k8s.io/kubectl v0.0.0-20190602132728-7075c07e78bf
+	k8s.io/kubelet => k8s.io/kubelet v0.0.0-20190620085838-f1cb295a73c9
+	k8s.io/legacy-cloud-providers => k8s.io/legacy-cloud-providers v0.0.0-20190620090156-2138f2c9de18
+	k8s.io/metrics => k8s.io/metrics v0.0.0-20190620085625-3b22d835f165
+	k8s.io/sample-apiserver => k8s.io/sample-apiserver v0.0.0-20190620085408-1aef9010884e
 )
-
-go 1.13

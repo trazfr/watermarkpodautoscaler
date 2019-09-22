@@ -148,10 +148,8 @@ func (p *Parser) NeedCRDFor(groupKind schema.GroupKind, maxDescLen *int) {
 		Spec: apiext.CustomResourceDefinitionSpec{
 			Group: groupKind.Group,
 			Names: apiext.CustomResourceDefinitionNames{
-				Kind:     groupKind.Kind,
-				ListKind: groupKind.Kind + "List",
-				Plural:   defaultPlural,
-				Singular: strings.ToLower(groupKind.Kind),
+				Kind:   groupKind.Kind,
+				Plural: defaultPlural,
 			},
 		},
 	}
@@ -162,17 +160,15 @@ func (p *Parser) NeedCRDFor(groupKind schema.GroupKind, maxDescLen *int) {
 		if typeInfo == nil {
 			continue
 		}
-		p.NeedFlattenedSchemaFor(typeIdent)
-		fullSchema := p.FlattenedSchemata[typeIdent]
-		fullSchema = *fullSchema.DeepCopy() // don't mutate the cache (we might be truncating description, etc)
+		fullSchema := FlattenEmbedded(p.flattener.FlattenType(typeIdent), pkg)
 		if maxDescLen != nil {
-			TruncateDescription(&fullSchema, *maxDescLen)
+			TruncateDescription(fullSchema, *maxDescLen)
 		}
 		ver := apiext.CustomResourceDefinitionVersion{
 			Name:   p.GroupVersions[pkg].Version,
 			Served: true,
 			Schema: &apiext.CustomResourceValidation{
-				OpenAPIV3Schema: &fullSchema, // fine to take a reference since we deepcopy above
+				OpenAPIV3Schema: fullSchema,
 			},
 		}
 		crd.Spec.Versions = append(crd.Spec.Versions, ver)
