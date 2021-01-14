@@ -18,7 +18,7 @@ import (
 
 	dynclient "sigs.k8s.io/controller-runtime/pkg/client"
 
-	datadoghqv1alpha1 "github.com/DataDog/watermarkpodautoscaler/pkg/apis/datadoghq/v1alpha1"
+	datadoghqv1alpha1 "github.com/DataDog/watermarkpodautoscaler/api/v1alpha1"
 )
 
 // WaitForFuncOnWatermarkPodAutoscaler used to wait a valid condition on a WatermarkPodAutoscaler

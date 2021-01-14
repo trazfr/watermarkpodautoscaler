@@ -15,7 +15,7 @@ import (
 	// Import all Kubernetes client auth plugins (e.g. Azure, GCP, OIDC, etc.)
 	_ "k8s.io/client-go/plugin/pkg/client/auth"
 
-	"github.com/DataDog/watermarkpodautoscaler/pkg/apis"
+	"github.com/DataDog/watermarkpodautoscaler/api/v1alpha1"
 	"github.com/DataDog/watermarkpodautoscaler/pkg/controller"
 	"github.com/DataDog/watermarkpodautoscaler/version"
 
@@ -99,7 +99,7 @@ func main() {
 
 	log.Info("Registering Components.")
 	// Setup Scheme for all resources
-	if err = apis.AddToScheme(mgr.GetScheme()); err != nil {
+	if err = v1alpha1.AddToScheme(mgr.GetScheme()); err != nil {
 		log.Error(err, "")
 		os.Exit(1)
 	}

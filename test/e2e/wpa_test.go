@@ -15,10 +15,8 @@ import (
 	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	apis "github.com/DataDog/watermarkpodautoscaler/pkg/apis"
-	"github.com/DataDog/watermarkpodautoscaler/pkg/apis/datadoghq/v1alpha1"
-	datadoghqv1alpha1 "github.com/DataDog/watermarkpodautoscaler/pkg/apis/datadoghq/v1alpha1"
-	wpatest "github.com/DataDog/watermarkpodautoscaler/pkg/apis/datadoghq/v1alpha1/test"
+	datadoghqv1alpha1 "github.com/DataDog/watermarkpodautoscaler/api/v1alpha1"
+	wpatest "github.com/DataDog/watermarkpodautoscaler/api/v1alpha1/test"
 
 	"github.com/DataDog/watermarkpodautoscaler/pkg/util"
 	"github.com/DataDog/watermarkpodautoscaler/test/e2e/metricsserver"
@@ -29,7 +27,7 @@ import (
 
 func TestWPA(t *testing.T) {
 	watermarkpodautoscalerList := &datadoghqv1alpha1.WatermarkPodAutoscalerList{}
-	err := framework.AddToFrameworkScheme(apis.AddToScheme, watermarkpodautoscalerList)
+	err := framework.AddToFrameworkScheme(datadoghqv1alpha1.AddToScheme, watermarkpodautoscalerList)
 	if err != nil {
 		t.Fatalf("failed to add custom resource scheme to framework: %v", err)
 	}
@@ -68,10 +66,10 @@ func SimpleCase(t *testing.T) {
 				APIVersion: "apps/v1",
 			},
 			MaxReplicas: 10,
-			Metrics: []v1alpha1.MetricSpec{
+			Metrics: []datadoghqv1alpha1.MetricSpec{
 				{
-					Type: v1alpha1.ExternalMetricSourceType,
-					External: &v1alpha1.ExternalMetricSource{
+					Type: datadoghqv1alpha1.ExternalMetricSourceType,
+					External: &datadoghqv1alpha1.ExternalMetricSource{
 						MetricName:     "metric_name",
 						MetricSelector: &metav1.LabelSelector{MatchLabels: map[string]string{"label": "value"}},
 						HighWatermark:  resource.NewQuantity(100, resource.DecimalSI),

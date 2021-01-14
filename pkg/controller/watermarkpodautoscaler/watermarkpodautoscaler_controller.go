@@ -12,7 +12,7 @@ import (
 	"strings"
 	"time"
 
-	datadoghqv1alpha1 "github.com/DataDog/watermarkpodautoscaler/pkg/apis/datadoghq/v1alpha1"
+	datadoghqv1alpha1 "github.com/DataDog/watermarkpodautoscaler/api/v1alpha1"
 
 	// TODO revisit error level logs as https://github.com/operator-framework/operator-sdk/pull/2319 is merged
 	"github.com/go-logr/logr"

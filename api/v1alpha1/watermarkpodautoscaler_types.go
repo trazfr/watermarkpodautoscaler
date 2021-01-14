@@ -12,11 +12,9 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-// +genclient
-// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 
 // WatermarkPodAutoscaler is the Schema for the watermarkpodautoscalers API
-// +k8s:openapi-gen=true
+// +kubebuilder:object:root=true
 // +kubebuilder:subresource:status
 // +kubebuilder:printcolumn:name="value",type="string",JSONPath=".status.currentMetrics[*].external.currentValue.."
 // +kubebuilder:printcolumn:name="high watermark",type="string",JSONPath=".spec.metrics[*].external.highWatermark.."
@@ -26,6 +24,8 @@ import (
 // +kubebuilder:printcolumn:name="max replicas",type="integer",JSONPath=".spec.maxReplicas"
 // +kubebuilder:printcolumn:name="dry-run",type="string",JSONPath=".spec.dryRun"
 // +kubebuilder:resource:path=watermarkpodautoscalers,shortName=wpa
+// +k8s:openapi-gen=true
+// +genclient
 type WatermarkPodAutoscaler struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
@@ -88,7 +88,7 @@ type WatermarkPodAutoscalerSpec struct {
 	// +kubebuilder:validation:Minimum=1
 	MaxReplicas int32 `json:"maxReplicas,omitempty"`
 	// +kubebuilder:validation:Minimum=1
-	ReadinessDelaySeconds int32 `json:"readinessDelay,omitempty"`
+	ReadinessDelaySeconds int32 `json:"readinessDelaySeconds,omitempty"`
 }
 
 // ExternalMetricSource indicates how to scale on a metric not associated with
@@ -186,7 +186,7 @@ type WatermarkPodAutoscalerStatus struct {
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 
 // WatermarkPodAutoscalerList contains a list of WatermarkPodAutoscaler
-// +k8s:openapi-gen=true
+// +kubebuilder:object:root=true
 type WatermarkPodAutoscalerList struct {
 	metav1.TypeMeta `json:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty"`

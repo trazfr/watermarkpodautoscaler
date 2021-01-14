@@ -11,7 +11,7 @@ import (
 	"context"
 	time "time"
 
-	datadoghqv1alpha1 "github.com/DataDog/watermarkpodautoscaler/pkg/apis/datadoghq/v1alpha1"
+	datadoghqv1alpha1 "github.com/DataDog/watermarkpodautoscaler/api/v1alpha1"
 	versioned "github.com/DataDog/watermarkpodautoscaler/pkg/client/clientset/versioned"
 	internalinterfaces "github.com/DataDog/watermarkpodautoscaler/pkg/client/informers/externalversions/internalinterfaces"
 	v1alpha1 "github.com/DataDog/watermarkpodautoscaler/pkg/client/listers/datadoghq/v1alpha1"
