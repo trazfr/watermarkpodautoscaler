@@ -10,6 +10,7 @@ import (
 	"github.com/DataDog/watermarkpodautoscaler/pkg/config"
 	"fmt"
 	"os"
+	"sigs.k8s.io/controller-runtime/pkg/healthz"
 
 	"k8s.io/apimachinery/pkg/runtime"
 	utilruntime "k8s.io/apimachinery/pkg/util/runtime"
@@ -75,6 +76,11 @@ func main() {
 		os.Exit(1)
 	}
 	// +kubebuilder:scaffold:builder
+
+	if err := mgr.AddHealthzCheck("health-probe", healthz.Ping); err != nil {
+		setupLog.Error(err, "Unable add liveness check")
+		os.Exit(1)
+	}
 
 	setupLog.Info("starting manager")
 	if err := mgr.Start(ctrl.SetupSignalHandler()); err != nil {

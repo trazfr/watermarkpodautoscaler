@@ -3,7 +3,7 @@
 // This product includes software developed at Datadog (https://www.datadoghq.com/).
 // Copyright 2016-2019 Datadog, Inc.
 
-package watermarkpodautoscaler
+package controllers
 
 import (
 	"context"
@@ -58,7 +58,7 @@ func TestReconcileWatermarkPodAutoscaler_Reconcile(t *testing.T) {
 	eventRecorder := eventBroadcaster.NewRecorder(scheme.Scheme, corev1.EventSource{Component: "TestReconcileWatermarkPodAutoscaler"})
 
 	logf.SetLogger(logf.ZapLogger(true))
-	log = logf.Log.WithName("TestReconcileWatermarkPodAutoscaler_Reconcile")
+	log := logf.Log.WithName("TestReconcileWatermarkPodAutoscaler_Reconcile")
 	s := scheme.Scheme
 	s.AddKnownTypes(v1alpha1.SchemeGroupVersion, &v1alpha1.WatermarkPodAutoscaler{})
 	type fields struct {
@@ -269,15 +269,15 @@ func TestReconcileWatermarkPodAutoscaler_Reconcile(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			r := &ReconcileWatermarkPodAutoscaler{
+			r := &WatermarkPodAutoscalerReconciler{
 				scaleClient:   tt.fields.scaleclient,
-				client:        tt.fields.client,
-				scheme:        tt.fields.scheme,
+				Client:        tt.fields.client,
+				Scheme:        tt.fields.scheme,
 				eventRecorder: tt.fields.eventRecorder,
 			}
 			log.Info(fmt.Sprintf("Reconciliating %v", tt.args.request))
 			if tt.args.loadFunc != nil {
-				tt.args.loadFunc(r.client)
+				tt.args.loadFunc(r.Client)
 			}
 			got, err := r.Reconcile(tt.args.request)
 			if (err != nil) != tt.wantErr {
@@ -288,7 +288,7 @@ func TestReconcileWatermarkPodAutoscaler_Reconcile(t *testing.T) {
 				t.Errorf("ReconcileWatermarkPodAutoscaler.Reconcile() = %v, want %v", got, tt.want)
 			}
 			if tt.wantFunc != nil {
-				if err := tt.wantFunc(r.client); err != nil {
+				if err := tt.wantFunc(r.Client); err != nil {
 					t.Errorf("ReconcileWatermarkPodAutoscaler.Reconcile() wantFunc validation error: %v", err)
 				}
 			}
@@ -588,11 +588,11 @@ func TestReconcileWatermarkPodAutoscaler_reconcileWPA(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			r := &ReconcileWatermarkPodAutoscaler{
-				client:        tt.fields.client,
+			r := &WatermarkPodAutoscalerReconciler{
+				Client:        tt.fields.client,
 				scaleClient:   tt.fields.scaleclient,
 				restMapper:    tt.fields.restmapper,
-				scheme:        tt.fields.scheme,
+				Scheme:        tt.fields.scheme,
 				eventRecorder: tt.fields.eventRecorder,
 			}
 			mClient := fakeMetricsClient{
@@ -603,10 +603,10 @@ func TestReconcileWatermarkPodAutoscaler_reconcileWPA(t *testing.T) {
 
 			r.replicaCalc = NewReplicaCalculator(mClient, nil)
 			if tt.args.loadFunc != nil {
-				tt.args.loadFunc(r.client, r.scaleClient, tt.args.wpa, tt.args.scale)
+				tt.args.loadFunc(r.Client, r.scaleClient, tt.args.wpa, tt.args.scale)
 			}
 			wpa := &v1alpha1.WatermarkPodAutoscaler{}
-			if err := r.client.Get(context.TODO(), types.NamespacedName{Name: tt.args.wpa.Name, Namespace: tt.args.wpa.Namespace}, wpa); err != nil {
+			if err := r.Client.Get(context.TODO(), types.NamespacedName{Name: tt.args.wpa.Name, Namespace: tt.args.wpa.Namespace}, wpa); err != nil {
 				t.Errorf("unable to get wpa, err: %v", err)
 			}
 			err := r.reconcileWPA(logf.Log.WithName(tt.name), wpa)
@@ -615,7 +615,7 @@ func TestReconcileWatermarkPodAutoscaler_reconcileWPA(t *testing.T) {
 				return
 			}
 			if tt.wantFunc != nil {
-				if err := tt.wantFunc(r.client, r.scaleClient, wpa); err != nil {
+				if err := tt.wantFunc(r.Client, r.scaleClient, wpa); err != nil {
 					t.Errorf("ReconcileWatermarkPodAutoscaler.Reconcile() wantFunc validation error: %v", err)
 				}
 			}
@@ -775,7 +775,7 @@ func TestReconcileWatermarkPodAutoscaler_computeReplicasForMetrics(t *testing.T)
 			cl := &fakeReplicaCalculator{
 				replicasFunc: tt.wantFunc,
 			}
-			r := &ReconcileWatermarkPodAutoscaler{
+			r := &WatermarkPodAutoscalerReconciler{
 				eventRecorder: tt.fields.eventRecorder,
 				replicaCalc:   cl,
 			}
