@@ -82,13 +82,14 @@ type WatermarkPodAutoscalerReconciler struct {
 	replicaCalc   ReplicaCalculatorItf
 }
 
+// +kubebuilder:rbac:groups=apps,resources=deployments,verbs=get;list;update;patch
+// +kubebuilder:rbac:groups=,resources=pods,verbs=get;list
+// +kubebuilder:rbac:groups=datadoghq.com,resources=watermarkpodautoscalers,verbs=get;list;watch;create;update;patch;delete
+
 // Reconcile reads that state of the cluster for a WatermarkPodAutoscaler object and makes changes based on the state read
 // and what is in the WatermarkPodAutoscaler.Spec
 // The Controller will requeue the Request to be processed again if the returned error is non-nil or
 // Result.Requeue is true, otherwise upon completion it will remove the work from the queue.
-// +kubebuilder:rbac:groups=apps,resources=deployments,verbs=get;list;update;patch
-// +kubebuilder:rbac:groups=,resources=pods,verbs=get;list
-// +kubebuilder:rbac:groups=datadoghq.com,resources=watermarkpodautoscalers,verbs=get;list;watch;create;update;patch;delete
 func (r *WatermarkPodAutoscalerReconciler) Reconcile(request ctrl.Request) (ctrl.Result, error) {
 	_ = context.Background()
 	log := r.Log.WithValues("watermarkpodautoscaler", request.NamespacedName)
