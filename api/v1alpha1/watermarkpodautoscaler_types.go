@@ -12,7 +12,6 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-
 // WatermarkPodAutoscaler is the Schema for the watermarkpodautoscalers API
 // +kubebuilder:object:root=true
 // +kubebuilder:subresource:status

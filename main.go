@@ -7,21 +7,20 @@ package main
 
 import (
 	"flag"
-	"github.com/DataDog/watermarkpodautoscaler/pkg/config"
 	"fmt"
 	"os"
-	"sigs.k8s.io/controller-runtime/pkg/healthz"
 
 	"k8s.io/apimachinery/pkg/runtime"
 	utilruntime "k8s.io/apimachinery/pkg/util/runtime"
 	clientgoscheme "k8s.io/client-go/kubernetes/scheme"
-	// Import all Kubernetes client auth plugins (e.g. Azure, GCP, OIDC, etc.)
-	_ "k8s.io/client-go/plugin/pkg/client/auth"
+	_ "k8s.io/client-go/plugin/pkg/client/auth" // Import all Kubernetes client auth plugins (e.g. Azure, GCP, OIDC, etc.)
 	ctrl "sigs.k8s.io/controller-runtime"
+	"sigs.k8s.io/controller-runtime/pkg/healthz"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 
 	datadoghqv1alpha1 "github.com/DataDog/watermarkpodautoscaler/api/v1alpha1"
 	"github.com/DataDog/watermarkpodautoscaler/controllers"
+	"github.com/DataDog/watermarkpodautoscaler/pkg/config"
 	// +kubebuilder:scaffold:imports
 )
 
@@ -55,11 +54,11 @@ func main() {
 	ctrl.SetLogger(zap.New(zap.UseDevMode(true)))
 
 	mgr, err := ctrl.NewManager(ctrl.GetConfigOrDie(), config.ManagerOptionsWithNamespaces(setupLog, ctrl.Options{
-		Scheme:             scheme,
-		MetricsBindAddress: fmt.Sprintf("%s:%d", host, metricsPort),
-		Port:               9443,
-		LeaderElection:     enableLeaderElection,
-		LeaderElectionID:   "watermarkpodautoscaler-lock",
+		Scheme:                 scheme,
+		MetricsBindAddress:     fmt.Sprintf("%s:%d", host, metricsPort),
+		Port:                   9443,
+		LeaderElection:         enableLeaderElection,
+		LeaderElectionID:       "watermarkpodautoscaler-lock",
 		HealthProbeBindAddress: fmt.Sprintf("%s:%d", host, healthPort),
 	}))
 	if err != nil {

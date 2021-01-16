@@ -2174,7 +2174,7 @@ func TestGetReadyPodsCount(t *testing.T) {
 			if !cache.WaitForNamedCacheSync("HPA", stop, informer.Informer().HasSynced) {
 				return
 			}
-			val, err := replicaCalculator.getReadyPodsCount(tc.scale, labels.SelectorFromSet(f.selector), readinessDelay*time.Second)
+			val, err := replicaCalculator.getReadyPodsCount(logf.Log, tc.scale, labels.SelectorFromSet(f.selector), readinessDelay*time.Second)
 			assert.Equal(t, f.expected, val)
 			if f.errorExpected != nil {
 				assert.EqualError(t, f.errorExpected, err.Error())

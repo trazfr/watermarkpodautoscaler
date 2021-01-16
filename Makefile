@@ -77,7 +77,6 @@ generate: controller-gen generate-openapi
 
 # Build the docker image
 docker-build: generate docker-build-ci
-	docker build . -t ${IMG}
 
 docker-build-ci:
 	docker build . -t ${IMG} --build-arg LDFLAGS="${LDFLAGS}"

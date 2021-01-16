@@ -20,37 +20,38 @@ import (
 	"context"
 	"fmt"
 
+	"math"
 	"strings"
-	discocache "k8s.io/client-go/discovery/cached"
-	"k8s.io/client-go/dynamic"
-	"k8s.io/client-go/kubernetes"
-	"k8s.io/client-go/restmapper"
-	"k8s.io/apimachinery/pkg/api/resource"
-	simplecontroller "k8s.io/kubernetes/pkg/controller"
+	"time"
+
 	"github.com/prometheus/client_golang/prometheus"
 	autoscalingv1 "k8s.io/api/autoscaling/v1"
-	"k8s.io/client-go/informers"
 	autoscalingv2 "k8s.io/api/autoscaling/v2beta1"
 	corev1 "k8s.io/api/core/v1"
 	apiequality "k8s.io/apimachinery/pkg/api/equality"
 	"k8s.io/apimachinery/pkg/api/errors"
 	apimeta "k8s.io/apimachinery/pkg/api/meta"
+	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	utilerrors "k8s.io/apimachinery/pkg/util/errors"
+	discocache "k8s.io/client-go/discovery/cached"
+	"k8s.io/client-go/dynamic"
+	"k8s.io/client-go/informers"
+	"k8s.io/client-go/kubernetes"
 	listerv1 "k8s.io/client-go/listers/core/v1"
 	"k8s.io/client-go/rest"
+	"k8s.io/client-go/restmapper"
 	"k8s.io/client-go/scale"
 	"k8s.io/client-go/tools/record"
+	simplecontroller "k8s.io/kubernetes/pkg/controller"
 	"k8s.io/kubernetes/pkg/controller/podautoscaler/metrics"
 	resourceclient "k8s.io/metrics/pkg/client/clientset/versioned/typed/metrics/v1beta1"
 	"k8s.io/metrics/pkg/client/external_metrics"
-	"math"
 	"sigs.k8s.io/controller-runtime/pkg/builder"
 	"sigs.k8s.io/controller-runtime/pkg/event"
 	"sigs.k8s.io/controller-runtime/pkg/predicate"
 	"sigs.k8s.io/controller-runtime/pkg/reconcile"
-	"time"
 
 	"github.com/go-logr/logr"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -72,9 +73,9 @@ var (
 type WatermarkPodAutoscalerReconciler struct {
 	// This client, initialized using mgr.Client() above, is a split client
 	// that reads objects from the cache and writes to the apiserver
-	Client client.Client
-	Log    logr.Logger
-	Scheme *runtime.Scheme
+	Client        client.Client
+	Log           logr.Logger
+	Scheme        *runtime.Scheme
 	scaleClient   scale.ScalesGetter
 	restMapper    apimeta.RESTMapper
 	syncPeriod    time.Duration
@@ -705,16 +706,22 @@ func updatePredicate(ev event.UpdateEvent) bool {
 	return hasChanged
 }
 
+// SetupWithManager creates a new Watermarkpodautoscaler controller
 func (r *WatermarkPodAutoscalerReconciler) SetupWithManager(mgr ctrl.Manager) error {
-	b :=  ctrl.NewControllerManagedBy(mgr).
+	b := ctrl.NewControllerManagedBy(mgr).
 		For(&datadoghqv1alpha1.WatermarkPodAutoscaler{}, builder.WithPredicates(predicate.Funcs{UpdateFunc: updatePredicate}))
-	b.Complete(r)
+	err := b.Complete(r)
+
+	if err != nil {
+		return err
+	}
+
 	config := mgr.GetConfig()
 	mc := metrics.NewRESTMetricsClient(
 		resourceclient.NewForConfigOrDie(config),
 		nil,
 		external_metrics.NewForConfigOrDie(config),
-		)
+	)
 	var stop chan struct{}
 	pl := initializePodInformer(config, stop)
 
