@@ -1,4 +1,4 @@
-image: golang:1.13
+image: golang:1.14
 variables:
   GO111MODULE: "on"
   PROJECTNAME: "watermarkpodautoscaler"
@@ -35,11 +35,18 @@ unit_tests:
   script:
   - make test
 
+generate_code:
+  stage: test
+  tags: [ "runner:main", "size:large" ]
+  script:
+    - make generate manifests
+    - git diff --exit-code
+
 lint_code:
   stage: test
   tags: [ "runner:main", "size:large" ]
   script:
-  - make validate
+  - make lint
 
 build_image:
   stage: image
@@ -48,9 +55,7 @@ build_image:
   inherit:
     default: false
   script:
-    - IMAGE_NAME=$DOCKER_REGISTRY/$PROJECTNAME:$TARGET_TAG
-    - docker build -t $IMAGE_NAME -f Dockerfile .
-    - docker push $IMAGE_NAME
+    - IMG=$DOCKER_REGISTRY/$PROJECTNAME:$TARGET_TAG make docker-build-ci docker-push
 
 test_e2e:
   stage: test-e2e
