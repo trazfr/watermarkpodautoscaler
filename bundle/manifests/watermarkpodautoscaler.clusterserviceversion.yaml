@@ -1,0 +1,45 @@
+apiVersion: operators.coreos.com/v1alpha1
+kind: ClusterServiceVersion
+metadata:
+  annotations:
+    alm-examples: '[]'
+    capabilities: Basic Install
+    operators.operatorframework.io/builder: operator-sdk-v1.0.0
+    operators.operatorframework.io/project_layout: go.kubebuilder.io/v2
+  name: watermarkpodautoscaler.v0.3.0
+  namespace: placeholder
+spec:
+  apiservicedefinitions: {}
+  customresourcedefinitions: {}
+  description: Custom controller that extends the Horizontal Pod Autoscaler
+  displayName: watermarkpodautoscaler
+  icon:
+  - base64data: ""
+    mediatype: ""
+  install:
+    spec:
+      deployments: []
+    strategy: deployment
+  installModes:
+  - supported: true
+    type: OwnNamespace
+  - supported: true
+    type: SingleNamespace
+  - supported: false
+    type: MultiNamespace
+  - supported: true
+    type: AllNamespaces
+  keywords:
+  - Datadog
+  - Autoscaling
+  - Monitoring
+  links:
+  - name: Watermarkpodautoscaler
+    url: https://watermarkpodautoscaler.domain
+  maintainers:
+  - email: support@datadoghq.com
+    name: Datadog Inc.
+  maturity: alpha
+  provider:
+    name: Datadog
+  version: 0.3.0
