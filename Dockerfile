@@ -29,6 +29,10 @@ LABEL description="WPA TODO"
 WORKDIR /
 COPY --from=builder /workspace/manager .
 
+RUN mkdir -p /licences
+COPY ./LICENSE ./LICENSE-3rdparty.csv /licenses/
+RUN chmod -R 755 /licences
+
 USER 1001
 
 ENTRYPOINT ["/manager"]

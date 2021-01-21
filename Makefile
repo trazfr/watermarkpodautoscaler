@@ -5,9 +5,12 @@ BUILDINFOPKG=github.com/DataDog/watermarkpodautoscaler/pkg/version
 GIT_TAG?=$(shell git tag -l --contains HEAD | tail -1)
 TAG_HASH=$(shell git tag | tail -1)_$(shell git rev-parse --short HEAD)
 VERSION?=$(if $(GIT_TAG),$(GIT_TAG),$(TAG_HASH))
+IMG_VERSION?=$(if $(VERSION),$(VERSION),latest)
 GIT_COMMIT?=$(shell git rev-parse HEAD)
 DATE=$(shell date +%Y-%m-%d/%H:%M:%S )
 LDFLAGS=-w -s -X ${BUILDINFOPKG}.Commit=${GIT_COMMIT} -X ${BUILDINFOPKG}.Version=${VERSION} -X ${BUILDINFOPKG}.BuildTime=${DATE}
+CHANNELS=alpha
+DEFAULT_CHANNEL=alpha
 
 # Default bundle image tag
 BUNDLE_IMG ?= controller-bundle:$(VERSION)
@@ -21,7 +24,7 @@ endif
 BUNDLE_METADATA_OPTS ?= $(BUNDLE_CHANNELS) $(BUNDLE_DEFAULT_CHANNEL)
 
 # Image URL to use all building/pushing image targets
-IMG ?= charlyyfon/watermarkpodautoscaler:0.3.0
+IMG ?= charlyyfon/watermarkpodautoscaler:$(IMG_VERSION)
 
 # Get the currently used golang install path (in GOPATH/bin, unless GOBIN is set)
 ifeq (,$(shell go env GOBIN))
@@ -61,7 +64,7 @@ deploy: manifests kustomize
 manifests: generate-manifests patch-crds
 
 generate-manifests: controller-gen
-	$(CONTROLLER_GEN) crd:trivialVersions=true,crdVersions=v1beta1 rbac:roleName=manager-role webhook paths="./..." output:crd:artifacts:config=config/crd/bases/v1beta1
+	$(CONTROLLER_GEN) crd:trivialVersions=true,crdVersions=v1beta1 rbac:roleName=manager webhook paths="./..." output:crd:artifacts:config=config/crd/bases/v1beta1
 
 # Run go fmt against code
 fmt:

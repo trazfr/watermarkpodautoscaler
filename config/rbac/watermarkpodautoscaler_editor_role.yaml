@@ -1,25 +1,9 @@
-
----
+# permissions for end users to edit watermarkpodautoscalers.
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  creationTimestamp: null
-  name: manager
+  name: watermarkpodautoscaler-editor-role
 rules:
-- resources:
-  - pods
-  verbs:
-  - get
-  - list
-- apiGroups:
-  - apps
-  resources:
-  - deployments
-  verbs:
-  - get
-  - list
-  - patch
-  - update
 - apiGroups:
   - datadoghq.com
   resources:
@@ -32,3 +16,9 @@ rules:
   - patch
   - update
   - watch
+- apiGroups:
+  - datadoghq.com
+  resources:
+  - watermarkpodautoscalers/status
+  verbs:
+  - get
